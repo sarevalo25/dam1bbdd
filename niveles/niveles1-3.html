@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CTF SQL · Niveles 1 a 3</title>
+<style>
+:root{--bg:#eef2f6;--sf:#fff;--tx:#1b2430;--mu:#5b6776;--ln:#c9d2dc;--ac:#0a6e8a;--ok:#1d7a3f;--er:#b3261e;--cd:#0f1a24;--cf:#d6e6f0;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d141b;--sf:#15202b;--tx:#e3eaf1;--mu:#93a1b1;--ln:#2a3947;--ac:#4fc3e0;--ok:#5fd18a;--er:#ff8a80;--cd:#081017;--cf:#bfe3f2}}
+:root[data-theme="dark"]{--bg:#0d141b;--sf:#15202b;--tx:#e3eaf1;--mu:#93a1b1;--ln:#2a3947;--ac:#4fc3e0;--ok:#5fd18a;--er:#ff8a80;--cd:#081017;--cf:#bfe3f2}
+html{color-scheme:light dark;scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.55 Georgia,"Times New Roman",serif}
+main{max-width:760px;margin:0 auto;padding:20px 16px 60px}
+h1{font:700 2rem/1.15 "Courier New",monospace;margin:.2em 0}
+p.s{color:var(--mu);margin:.2em 0 1em}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding:10px 0;border-bottom:1px solid var(--ln);z-index:5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+.row{display:flex;justify-content:space-between;gap:12px;font-family:"Courier New",monospace;font-size:.95rem}
+.pb{height:8px;background:var(--ln);border-radius:4px;margin-top:6px;overflow:hidden}
+.pb i{display:block;height:100%;width:0;background:var(--ac);transition:width .4s}
+h2{font:700 1.1rem "Courier New",monospace;margin:28px 0 8px;color:var(--ac)}
+.c{background:var(--sf);border:1px solid var(--ln);border-left:4px solid var(--ln);border-radius:6px;padding:14px 16px;margin:10px 0}
+.c.ok{border-left-color:var(--ok)}
+.c h3{margin:0 0 4px;font-size:1.05rem;display:flex;justify-content:space-between;gap:8px}
+.pt{font-family:"Courier New",monospace;color:var(--mu);font-size:.9rem;white-space:nowrap}
+.c p{margin:.3em 0 .6em}
+code{font-family:"Courier New",monospace;background:var(--bg);padding:1px 5px;border-radius:3px;font-size:.92em}
+textarea{width:100%;min-height:84px;background:var(--cd);color:var(--cf);border:1px solid var(--ln);border-radius:4px;padding:8px;font:14px/1.4 "Courier New",monospace;resize:vertical}
+button{font:inherit;font-size:.9rem;padding:6px 14px;border-radius:4px;border:1px solid var(--ac);background:var(--ac);color:var(--bg);cursor:pointer;margin:8px 8px 0 0}
+button.g{background:none;color:var(--ac)}
+button:focus-visible,textarea:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+.m{margin-top:8px;font-family:"Courier New",monospace;font-size:.9rem;word-break:break-all}
+.m.er{color:var(--er)}.m.ok{color:var(--ok)}.h{color:var(--mu);font-style:italic}
+</style></head><body><main>
+<h1>CTF SQL: Niveles 1 a 3</h1>
+<p class="s">Oracle 23 · Bases de Datos, 1º DAM. Escribe la sentencia o palabra pedida, resuelve el reto y consigue la flag. Una pista resta el 25 % de los puntos del reto. Escribe todo en mayúsculas (los textos entre comillas simples se respetan). Los espacios no importan. En los retos de varias sentencias, sepáralas con punto y coma y respeta el orden indicado.</p>
+<div class="bar"><div class="row"><span id="sc">Puntos: 0 / 0</span><span id="pr">0 / 0 retos</span></div><div class="pb"><i id="pbi"></i></div></div>
+<div id="list"></div>
+<p><button class="g" id="rs">Reiniciar progreso</button></p>
+</main>
+<script>
+var L=[
+["Nivel 1 · Teoría",10,"Sentencias de estructura","¿Con qué siglas se llama al grupo de sentencias que crea, modifica y elimina objetos (CREATE, ALTER, DROP)?","Data Definition Language.",/^ddl$/],
+["Nivel 1 · Teoría",10,"Control de acceso","¿Y las siglas del grupo de sentencias que gestiona permisos (GRANT, REVOKE)?","Data Control Language.",/^dcl$/],
+["Nivel 1 · Teoría",10,"Radiografía de una tabla","Escribe el comando de SQL Developer que muestra la estructura de la tabla <code>EMPLEADO</code>.","Empieza por DESC.",/^describe(empleado)?$/],
+["Nivel 2 · Tipos",15,"Texto de longitud variable","Escribe el tipo de dato adecuado para un campo nombre de hasta 30 caracteres de longitud variable.","Tipo de cadena de Oracle con tamaño máximo.",/^varchar2\(30\)$/],
+["Nivel 2 · Tipos",15,"Precio con decimales","Escribe el tipo para guardar valores de -999.99 a 999.99.","NUMBER(precisión, escala).",/^number\(5,2\)$/],
+["Nivel 3 · CREATE TABLE",25,"Tabla con identidad","Crea la tabla <code>LIBRO</code> con estas columnas, en este orden: <code>ID_LIBRO NUMBER(10)</code> autoincremental (no admite valor manual), <code>TITULO VARCHAR2(60)</code>, <code>AUTOR VARCHAR2(40)</code> e <code>ISBN VARCHAR2(13)</code>, los tres obligatorios, y <code>PAGINAS NUMBER(4)</code> y <code>PRECIO NUMBER(5,2)</code>, que admiten nulos. La clave primaria se declara como restricción <code>PK_LIBRO</code>.","Al final: CONSTRAINT PK_LIBRO PRIMARY KEY (ID_LIBRO). Identidad: GENERATED ALWAYS AS IDENTITY.",/^createtablelibro\(id_libronumber\(10\)generatedalwaysasidentity(notnull)?,titulovarchar2\(60\)notnull,autorvarchar2\(40\)notnull,isbnvarchar2\(13\)notnull,paginasnumber\(4\)(null)?,precionumber\(5,2\)(null)?,constraintpk_libroprimarykey\(id_libro\)\)$/],
+["Nivel 3 · CREATE TABLE",25,"Tabla con fecha por defecto","Crea la tabla <code>SOCIO</code>: <code>ID_SOCIO NUMBER(8)</code> autoincremental (no admite valor manual), <code>NOMBRE VARCHAR2(30)</code> y <code>APELLIDOS VARCHAR2(60)</code> obligatorios, <code>EMAIL VARCHAR2(50)</code> y <code>TELEFONO VARCHAR2(9)</code> con nulos, y <code>FECHA_ALTA DATE</code> con valor por defecto <code>CURRENT_DATE</code> y obligatoria. Restricción <code>PK_SOCIO</code> sobre <code>ID_SOCIO</code>.","DEFAULT va antes de NOT NULL.",/^createtablesocio\(id_socionumber\(8\)generatedalwaysasidentity(notnull)?,nombrevarchar2\(30\)notnull,apellidosvarchar2\(60\)notnull,emailvarchar2\(50\)(null)?,telefonovarchar2\(9\)(null)?,fecha_altadatedefaultcurrent_datenotnull,constraintpk_socioprimarykey\(id_socio\)\)$/],
+["Nivel 3 · CREATE TABLE",30,"Tabla con clave ajena","Crea la tabla <code>PRESTAMO</code> con: <code>ID_PRESTAMO NUMBER(10)</code> autoincremental (no admite valor manual), <code>FECHA_PRESTAMO DATE</code> obligatoria, <code>FECHA_DEVOLUCION DATE</code>, <code>OBSERVACIONES VARCHAR2(100)</code> e <code>ID_SOCIO NUMBER(8)</code> obligatorio. Restricciones dentro del CREATE TABLE: PK <code>PK_PRESTAMO</code> y FK <code>FK_PRESTAMO_SOCIO</code> que referencia a la tabla <code>SOCIO</code> del reto anterior. Las columnas sin otra indicación admiten nulos.","La FK va tras la PK: CONSTRAINT ... FOREIGN KEY (...) REFERENCES SOCIO(ID_SOCIO).",/^createtableprestamo\(id_prestamonumber\(10\)generatedalwaysasidentity(notnull)?,fecha_prestamodatenotnull,fecha_devoluciondate(null)?,observacionesvarchar2\(100\)(null)?,id_socionumber\(8\)notnull,constraintpk_prestamoprimarykey\(id_prestamo\),constraintfk_prestamo_socioforeignkey\(id_socio\)referencessocio\(id_socio\)\)$/],
+["Nivel 3 · CREATE TABLE",20,"Valor por defecto","Escribe la definición de la columna <code>ESTADO VARCHAR2(10)</code> con valor por defecto <code>'NUEVO'</code> y obligatoria.","DEFAULT va antes de NOT NULL.",/^estadovarchar2\(10\)default'nuevo'notnull$/],
+["Nivel 3 · CREATE TABLE",20,"Restricción CHECK","Escribe la columna <code>EDAD NUMBER(3)</code> con un CHECK que obligue a estar entre 18 y 65.","Puedes usar BETWEEN.",/^edadnumber\(3\)check\((edadbetween18and65|edad>=18andedad<=65)\)$/],
+["Nivel 3 · CREATE TABLE",20,"Valores únicos","Dentro del CREATE TABLE, escribe la restricción nombrada <code>UQ_EMPLEADO_DNI</code> que impide repetir <code>DNI</code>.","CONSTRAINT nombre UNIQUE (columna).",/^constraintuq_empleado_dniunique\(dni\)$/],
+["Nivel 3 · CREATE TABLE",25,"Clave primaria compuesta","La tabla <code>LINEA</code> ya existe con <code>ID_PEDIDO</code> e <code>ID_PRODUCTO</code>. Añade la clave primaria compuesta <code>PK_LINEA</code> con ambas columnas, en ese orden.","ALTER TABLE ... ADD CONSTRAINT ... PRIMARY KEY (col1, col2).",/^altertablelineaaddconstraintpk_lineaprimarykey\(id_pedido,id_producto\)$/],
+];
+var K="ctf-sql-niveles1-3",S={s:{},h:{}};
+try{var t=localStorage.getItem(K);if(t)S=JSON.parse(t)}catch(e){}
+function sv(){try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}}
+function norm(x){return x.toLowerCase().replace(/\s+/g,"")}
+var MSG={0:"Respuesta incorrecta. Revisa la sintaxis, los nombres y el orden.",2:"Escribe una respuesta antes de comprobar.",3:"Escribe todo en mayúsculas: palabras reservadas e identificadores.",4:"Orden incorrecto: una tabla debe crearse antes de ser referenciada."};
+function check(i,raw){if(!raw.trim())return 2;if(/[a-z]/.test(raw.replace(/'[^']*'/g,"")))return 3;var R=L[i][5];if(!Array.isArray(R))R=[R];var p=raw.split(";").map(norm).filter(Boolean);if(p.length===R.length&&R.every(function(r,k){return r.test(p[k])}))return 1;if(R.length>1&&p.length>1&&R[1].test(p[0]))return 4;return 0}
+function flag(i){var h=0,q=L[i][2]+i;for(var k=0;k<q.length;k++)h=(h*31+q.charCodeAt(k))%65521;return "FLAG{DAM_"+(i+1)+"_"+h.toString(16).toUpperCase()+"}"}
+function pts(i){return L[i][1]-(S.h[i]?Math.floor(L[i][1]*.25):0)}
+function stat(){var tot=0,sc=0,n=0;L.forEach(function(c,i){tot+=c[1];if(S.s[i]){sc+=pts(i);n++}});
+document.getElementById("sc").textContent="Puntos: "+sc+" / "+tot;
+document.getElementById("pr").textContent=n+" / "+L.length+" retos";
+document.getElementById("pbi").style.width=(100*n/L.length)+"%"}
+function show(i){var m=document.getElementById("m"+i);m.className="m ok";m.textContent="Correcto: "+flag(i)+" (+"+pts(i)+" puntos)";
+document.getElementById("c"+i).className="c ok"}
+var box=document.getElementById("list"),last="";
+L.forEach(function(c,i){
+if(c[0]!==last){last=c[0];var h=document.createElement("h2");h.textContent=c[0];box.appendChild(h)}
+var d=document.createElement("div");d.className="c";d.id="c"+i;
+d.innerHTML='<h3><span>'+c[2]+'</span><span class="pt">'+c[1]+' pts</span></h3><p>'+c[3]+'</p><textarea id="a'+i+'" spellcheck="false" aria-label="Respuesta del reto '+(i+1)+'"></textarea><button data-i="'+i+'">Comprobar</button><button class="g" data-h="'+i+'">Ver pista</button><div class="m" id="m'+i+'"></div>';
+box.appendChild(d);
+if(S.h[i])hint(i,true);
+if(S.s[i])show(i)});
+function hint(i,q){var m=document.getElementById("m"+i);if(!S.s[i]){m.className="m h";m.textContent="Pista: "+L[i][4]}
+if(!q){S.h[i]=1;sv();stat()}}
+box.addEventListener("click",function(e){var b=e.target;
+if(b.dataset.h!==undefined){hint(+b.dataset.h);return}
+if(b.dataset.i!==undefined){var i=+b.dataset.i,v=check(i,document.getElementById("a"+i).value);
+if(v===1){S.s[i]=1;sv();show(i);stat()}else{var m=document.getElementById("m"+i);m.className="m er";
+m.textContent=MSG[v]}}});
+document.getElementById("rs").onclick=function(){if(confirm("¿Borrar todo el progreso?")){S={s:{},h:{}};sv();location.reload()}};
+stat();
+</script></body></html>
