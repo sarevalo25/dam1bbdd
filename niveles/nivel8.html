@@ -39,9 +39,9 @@ button:focus-visible,textarea:focus-visible{outline:3px solid var(--ac);outline-
 </main>
 <script>
 var L=[
-["Nivel 8 · Jefe final",40,"Roles","Concede al rol <code>CONSULTA</code> el privilegio SELECT sobre <code>ANALISTA.FACTURA</code>.","El destino es un rol, no un usuario.",/^grantselectonanalista\.facturatoconsulta$/],
-["Nivel 8 · Jefe final",40,"Sinónimo público","Crea un sinónimo público llamado <code>EMPLEADO</code> para la tabla <code>ANA.EMPLEADO</code>.","CREATE PUBLIC SYNONYM ... FOR ...",/^createpublicsynonymempleadoforana\.empleado$/],
-["Nivel 8 · Jefe final",45,"Borrar usuario con objetos","Elimina el usuario <code>ANA</code> aunque tenga tablas, borrando también sus objetos.","Oracle no permite borrar usuarios con objetos sin CASCADE.",/^dropuseranacascade$/]
+["Nivel 8 ",40,"Roles","Concede al rol <code>CONSULTA</code> el privilegio SELECT sobre <code>ANALISTA.FACTURA</code>.","El destino es un rol, no un usuario.",/^grantselectonanalista\.facturatoconsulta$/],
+["Nivel 8 ",40,"Sinónimo público","Crea un sinónimo público llamado <code>EMPLEADO</code> para la tabla <code>ANA.EMPLEADO</code>.","CREATE PUBLIC SYNONYM ... FOR ...",/^createpublicsynonymempleadoforana\.empleado$/],
+["Nivel 8 ",45,"Borrar usuario con objetos","Elimina el usuario <code>ANA</code> aunque tenga tablas, borrando también sus objetos.","Oracle no permite borrar usuarios con objetos sin CASCADE.",/^dropuseranacascade$/]
 ];
 var K="ctf-sql-nivel8",S={s:{},h:{}};
 try{var t=localStorage.getItem(K);if(t)S=JSON.parse(t)}catch(e){}
