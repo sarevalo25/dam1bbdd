@@ -3,23 +3,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Bases de Datos · Retos CTF</title>
 <style>
-:root{--bg:#eef2f6;--sf:#fff;--tx:#1b2430;--mu:#5b6776;--ln:#c9d2dc;--ac:#0a6e8a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d141b;--sf:#15202b;--tx:#e3eaf1;--mu:#93a1b1;--ln:#2a3947;--ac:#4fc3e0}}
-:root[data-theme="dark"]{--bg:#0d141b;--sf:#15202b;--tx:#e3eaf1;--mu:#93a1b1;--ln:#2a3947;--ac:#4fc3e0}
-html{color-scheme:light dark}
+:root{--bg:#f1f5fa;--sf:#fff;--tx:#14202e;--mu:#586577;--ln:#d5deea;--ac:#0b7285;--ac2:#6741d9;--on:#fff;--ok:#177a3e;--okbg:#e6f6ec;--er:#b3261e;--cd:#0e1822;--cf:#d6e6f0;--glass:rgba(241,245,250,.85);--sh:0 1px 2px rgba(20,32,46,.06),0 6px 18px rgba(20,32,46,.07);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a1119;--sf:#121c28;--tx:#e6edf5;--mu:#97a6b7;--ln:#26364a;--ac:#4fc3e0;--ac2:#a48bff;--on:#04131a;--ok:#5fd18a;--okbg:#10291c;--er:#ff8a80;--cd:#070d13;--cf:#bfe3f2;--glass:rgba(10,17,25,.85);--sh:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35)}}
+:root[data-theme="dark"]{--bg:#0a1119;--sf:#121c28;--tx:#e6edf5;--mu:#97a6b7;--ln:#26364a;--ac:#4fc3e0;--ac2:#a48bff;--on:#04131a;--ok:#5fd18a;--okbg:#10291c;--er:#ff8a80;--cd:#070d13;--cf:#bfe3f2;--glass:rgba(10,17,25,.85);--sh:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35)}
+html{color-scheme:light dark;scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.55 Georgia,"Times New Roman",serif}
-main{max-width:720px;margin:0 auto;padding:24px 16px 60px}
-h1{font:700 1.9rem/1.15 "Courier New",monospace;margin:.2em 0}
-p.s{color:var(--mu);margin:.2em 0 1.4em}
-details{background:var(--sf);border:1px solid var(--ln);border-left:4px solid var(--ac);border-radius:6px;padding:4px 16px}
-summary{cursor:pointer;font:700 1.05rem "Courier New",monospace;padding:12px 0}
-summary:focus-visible,a:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
-ul{list-style:none;margin:0;padding:0 0 12px}
-li{border-top:1px solid var(--ln)}
-a{display:flex;justify-content:space-between;gap:12px;padding:12px 4px;color:var(--ac);text-decoration:none}
-a:hover{text-decoration:underline}
-a span{color:var(--mu);font:.9rem "Courier New",monospace;white-space:nowrap}
+body{margin:0;color:var(--tx);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);background-image:radial-gradient(900px 380px at 88% -90px,rgba(103,65,217,.16),transparent 70%),radial-gradient(700px 320px at 0 -70px,rgba(11,114,133,.18),transparent 70%);background-repeat:no-repeat}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+main{max-width:800px;margin:0 auto;padding:26px 18px 70px}
+h1{font:800 clamp(1.6rem,5vw,2.3rem)/1.15 ui-monospace,"Cascadia Code",Menlo,Consolas,"Courier New",monospace;margin:.1em 0 .25em;letter-spacing:-.02em;color:var(--ac);background:linear-gradient(90deg,var(--ac),var(--ac2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+h1::before{content:"\1F6A9  ";-webkit-text-fill-color:initial}
+p.s{color:var(--mu);margin:.2em 0 1.2em;max-width:64ch}
+a:focus-visible,summary:focus-visible,button:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+details{background:var(--sf);border:1px solid var(--ln);border-radius:16px;box-shadow:var(--sh);overflow:hidden}
+summary{list-style:none;cursor:pointer;padding:18px 20px;display:flex;align-items:center;gap:12px;font:700 1.05rem ui-monospace,"Cascadia Code",Menlo,Consolas,"Courier New",monospace;background:linear-gradient(90deg,rgba(11,114,133,.12),rgba(103,65,217,.12))}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"\25B8";color:var(--ac);transition:transform .2s}
+details[open] summary::before{transform:rotate(90deg)}
+ul{list-style:none;margin:0;padding:10px 12px 14px}
+li{margin:6px 0}
+a{display:flex;align-items:center;gap:12px;padding:13px 14px;border:1px solid var(--ln);border-radius:12px;background:var(--bg);color:var(--tx);text-decoration:none;font-weight:600;transition:border-color .15s,transform .15s}
+a:hover{border-color:var(--ac);transform:translateX(3px)}
+a span{margin-left:auto;font:600 .8rem ui-monospace,"Cascadia Code",Menlo,Consolas,"Courier New",monospace;padding:2px 10px;border-radius:99px;background:var(--sf);border:1px solid var(--ln);color:var(--mu);white-space:nowrap}
+a::after{content:"\2192";color:var(--ac)}
 </style></head><body><main>
 <h1>Retos CTF de Bases de Datos</h1>
 <p class="s">1º CFGS DAM · Elige un tema y después el fichero de retos que quieras resolver.</p>
@@ -33,7 +40,7 @@ a span{color:var(--mu);font:.9rem "Courier New",monospace;white-space:nowrap}
 <li><a href="niveles/nivel5-alter-y-drop.html">Nivel 5: ALTER y DROP <span>6 retos</span></a></li>
 <li><a href="niveles/nivel6-practicas-de-modificacion.html">Nivel 6: prácticas de modificación <span>4 retos</span></a></li>
 <li><a href="niveles/nivel7-dcl.html">Nivel 7: DCL, usuarios y permisos <span>4 retos</span></a></li>
-<li><a href="niveles/nivel8.html">Nivel 8: final <span>3 retos</span></a></li>
+<li><a href="niveles/nivel8.html">Nivel 8: jefe final <span>10 retos</span></a></li>
 </ul>
 </details>
 </main></body></html>
