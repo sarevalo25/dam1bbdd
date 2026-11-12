@@ -69,8 +69,9 @@ var L=[
 ["Nivel 8 · Jefe final",50,"Retirar el acceso","Escribe, separadas por <code>;</code> y en orden: 1) quita a <code>LAURA</code> los privilegios INSERT y UPDATE (en ese orden) sobre <code>RRHH.NOMINA</code>; 2) elimina su sinónimo <code>LAURA.NOMINA</code>; 3) elimina el rol <code>LECTOR</code>; 4) elimina el usuario <code>LAURA</code> junto con todos sus objetos.","REVOKE ... ON ... FROM ..., DROP SYNONYM, DROP ROLE y DROP USER ... CASCADE.",[/^revoke(insert,update|update,insert)onrrhh\.nominafromlaura$/,/^dropsynonymlaura\.nomina$/,/^droprolelector$/,/^dropuserlauracascade$/]],
 ["Nivel 8 · Jefe final",60,"Jefe final: la empresa completa","Escribe, separadas por <code>;</code> y en orden: 1) crea el rol <code>GESTOR</code>; 2) concédele SELECT, INSERT y UPDATE (en ese orden) sobre <code>RRHH.NOMINA</code>; 3) crea el usuario <code>SARA</code> con contraseña <code>SARA2026</code> y cuota ilimitada en <code>USERS</code>; 4) concédele el privilegio <code>CREATE SESSION</code>; 5) asígnale el rol <code>GESTOR</code>; 6) crea un sinónimo público <code>NOMINA</code> para <code>RRHH.NOMINA</code>.","Seis sentencias: ROL, permisos del rol, usuario, sesión, rol al usuario y sinónimo.",[/^createrolegestor$/,/^grantselect,insert,updateonrrhh\.nominatogestor$/,/^createusersaraidentifiedbysara2026quotaunlimitedonusers$/,/^grantcreatesessiontosara$/,/^grantgestortosara$/,/^createpublicsynonymnominaforrrhh\.nomina$/]],
 ];
-var K="ctf-sql-nivel8-v2",S={s:{},h:{}};
+var K="ctf-sql-nivel8-v2",S={s:{},h:{},a:{}};
 try{var t=localStorage.getItem(K);if(t)S=JSON.parse(t)}catch(e){}
+S.a=S.a||{};S.s=S.s||{};S.h=S.h||{};
 function sv(){try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}}
 function norm(x){return x.toLowerCase().replace(/\s+/g,"")}
 var MSG={0:"Respuesta incorrecta. Revisa la sintaxis, los nombres y el orden.",2:"Escribe una respuesta antes de comprobar.",3:"Escribe todo en mayúsculas: palabras reservadas e identificadores.",4:"Orden incorrecto: una tabla debe crearse antes de ser referenciada."};
@@ -88,7 +89,7 @@ L.forEach(function(c,i){
 if(c[0]!==last){last=c[0];var h=document.createElement("h2");h.textContent=c[0];box.appendChild(h)}
 var d=document.createElement("div");d.className="c";d.id="c"+i;
 d.innerHTML='<h3><span>'+c[2]+'</span><span class="pt">'+c[1]+' pts</span></h3><p>'+c[3]+'</p><textarea id="a'+i+'" spellcheck="false" aria-label="Respuesta del reto '+(i+1)+'"></textarea><button data-i="'+i+'">Comprobar</button><button class="g" data-h="'+i+'">Ver pista</button><div class="m" id="m'+i+'"></div>';
-box.appendChild(d);
+box.appendChild(d);if(S.a[i])d.querySelector("textarea").value=S.a[i];
 if(S.h[i])hint(i,true);
 if(S.s[i])show(i)});
 function hint(i,q){var m=document.getElementById("m"+i);if(!S.s[i]){m.className="m h";m.textContent="Pista: "+L[i][4]}
@@ -98,6 +99,7 @@ if(b.dataset.h!==undefined){hint(+b.dataset.h);return}
 if(b.dataset.i!==undefined){var i=+b.dataset.i,v=check(i,document.getElementById("a"+i).value);
 if(v===1){S.s[i]=1;sv();show(i);stat()}else{var m=document.getElementById("m"+i);m.className="m er";
 m.textContent=MSG[v]}}});
-document.getElementById("rs").onclick=function(){if(confirm("¿Borrar todo el progreso?")){S={s:{},h:{}};sv();location.reload()}};
+box.addEventListener("input",function(e){var t=e.target;if(t.tagName==="TEXTAREA"){S.a[+t.id.slice(1)]=t.value;sv()}});
+document.getElementById("rs").onclick=function(){if(confirm("¿Borrar todo el progreso?")){S={s:{},h:{},a:{}};sv();location.reload()}};
 stat();
 </script></body></html>

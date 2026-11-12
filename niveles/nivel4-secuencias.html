@@ -63,8 +63,9 @@ var L=[
 ["Nivel 4 · Secuencias",35,"Tabla con secuencia","Se piden dos sentencias, separadas por <code>;</code> y en este orden: <b>1)</b> crea la secuencia <code>SEQ_TICKET</code> (empieza en 1 y aumenta de uno en uno); <b>2)</b> crea la tabla <code>TICKET</code> con <code>ID_TICKET NUMBER(6)</code> (valor por defecto: el siguiente de <code>SEQ_TICKET</code>, obligatorio), <code>ASUNTO VARCHAR2(80)</code> obligatorio, <code>DESCRIPCION VARCHAR2(200)</code>, <code>PRIORIDAD NUMBER(1)</code> obligatorio y <code>FECHA_CREACION DATE</code>. PK como restricción <code>PK_TICKET</code>.","Primero la secuencia y después la tabla. DEFAULT SEQ_TICKET.NEXTVAL NOT NULL.",[/^createsequenceseq_ticket(startwith1incrementby1|incrementby1startwith1)$/,/^createtableticket\(id_ticketnumber\(6\)defaultseq_ticket\.nextvalnotnull,asuntovarchar2\(80\)notnull,descripcionvarchar2\(200\)(null)?,prioridadnumber\(1\)notnull,fecha_creaciondate(null)?,constraintpk_ticketprimarykey\(id_ticket\)\)$/]],
 ["Nivel 4 · Secuencias",25,"Autoincremental moderno","Escribe la definición de la columna <code>ID_PRODUCTO NUMBER(10)</code> autoincremental que no admita valor manual (no definas la restricción de PK).","GENERATED ALWAYS AS IDENTITY.",/^id_productonumber\(10\)generatedalwaysasidentity$/],
 ];
-var K="ctf-sql-nivel4-r2",S={s:{},h:{}};
+var K="ctf-sql-nivel4-r2",S={s:{},h:{},a:{}};
 try{var t=localStorage.getItem(K);if(t)S=JSON.parse(t)}catch(e){}
+S.a=S.a||{};S.s=S.s||{};S.h=S.h||{};
 function sv(){try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}}
 function norm(x){return x.toLowerCase().replace(/\s+/g,"")}
 var MSG={0:"Respuesta incorrecta. Revisa la sintaxis, los nombres y el orden.",2:"Escribe una respuesta antes de comprobar.",3:"Escribe todo en mayúsculas: palabras reservadas e identificadores.",4:"Orden incorrecto: una tabla debe crearse antes de ser referenciada."};
@@ -82,7 +83,7 @@ L.forEach(function(c,i){
 if(c[0]!==last){last=c[0];var h=document.createElement("h2");h.textContent=c[0];box.appendChild(h)}
 var d=document.createElement("div");d.className="c";d.id="c"+i;
 d.innerHTML='<h3><span>'+c[2]+'</span><span class="pt">'+c[1]+' pts</span></h3><p>'+c[3]+'</p><textarea id="a'+i+'" spellcheck="false" aria-label="Respuesta del reto '+(i+1)+'"></textarea><button data-i="'+i+'">Comprobar</button><button class="g" data-h="'+i+'">Ver pista</button><div class="m" id="m'+i+'"></div>';
-box.appendChild(d);
+box.appendChild(d);if(S.a[i])d.querySelector("textarea").value=S.a[i];
 if(S.h[i])hint(i,true);
 if(S.s[i])show(i)});
 function hint(i,q){var m=document.getElementById("m"+i);if(!S.s[i]){m.className="m h";m.textContent="Pista: "+L[i][4]}
@@ -92,6 +93,7 @@ if(b.dataset.h!==undefined){hint(+b.dataset.h);return}
 if(b.dataset.i!==undefined){var i=+b.dataset.i,v=check(i,document.getElementById("a"+i).value);
 if(v===1){S.s[i]=1;sv();show(i);stat()}else{var m=document.getElementById("m"+i);m.className="m er";
 m.textContent=MSG[v]}}});
-document.getElementById("rs").onclick=function(){if(confirm("¿Borrar todo el progreso?")){S={s:{},h:{}};sv();location.reload()}};
+box.addEventListener("input",function(e){var t=e.target;if(t.tagName==="TEXTAREA"){S.a[+t.id.slice(1)]=t.value;sv()}});
+document.getElementById("rs").onclick=function(){if(confirm("¿Borrar todo el progreso?")){S={s:{},h:{},a:{}};sv();location.reload()}};
 stat();
 </script></body></html>

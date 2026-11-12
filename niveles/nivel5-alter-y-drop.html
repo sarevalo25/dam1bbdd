@@ -65,8 +65,9 @@ var L=[
 ["Nivel 5 · ALTER y DROP",30,"Borrado en cascada","Añade a <code>LINEA</code> la restricción <code>FK_LINEA_PEDIDO</code> sobre <code>ID_PEDIDO</code> hacia <code>PEDIDO(ID_PEDIDO)</code>, de modo que al borrar un pedido se borren sus líneas.","ON DELETE CASCADE al final.",/^altertablelineaaddconstraintfk_linea_pedidoforeignkey\(id_pedido\)referencespedido\(id_pedido\)ondeletecascade$/],
 ["Nivel 5 · ALTER y DROP",30,"Eliminar con dependencias","<code>CLIENTE</code> está referenciada por la FK de <code>PEDIDO</code>. Escribe el DROP que elimina la tabla y que elimine de forma automática las restricciones de otras tablas que estén apuntando a la clave primaria de la tabla <code>CLIENTE</code>.","CASCADE CONSTRAINTS.",/^droptableclientecascadeconstraints$/],
 ];
-var K="ctf-sql-nivel5",S={s:{},h:{}};
+var K="ctf-sql-nivel5",S={s:{},h:{},a:{}};
 try{var t=localStorage.getItem(K);if(t)S=JSON.parse(t)}catch(e){}
+S.a=S.a||{};S.s=S.s||{};S.h=S.h||{};
 function sv(){try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}}
 function norm(x){return x.toLowerCase().replace(/\s+/g,"")}
 var MSG={0:"Respuesta incorrecta. Revisa la sintaxis, los nombres y el orden.",2:"Escribe una respuesta antes de comprobar.",3:"Escribe todo en mayúsculas: palabras reservadas e identificadores.",4:"Orden incorrecto: una tabla debe crearse antes de ser referenciada."};
@@ -84,7 +85,7 @@ L.forEach(function(c,i){
 if(c[0]!==last){last=c[0];var h=document.createElement("h2");h.textContent=c[0];box.appendChild(h)}
 var d=document.createElement("div");d.className="c";d.id="c"+i;
 d.innerHTML='<h3><span>'+c[2]+'</span><span class="pt">'+c[1]+' pts</span></h3><p>'+c[3]+'</p><textarea id="a'+i+'" spellcheck="false" aria-label="Respuesta del reto '+(i+1)+'"></textarea><button data-i="'+i+'">Comprobar</button><button class="g" data-h="'+i+'">Ver pista</button><div class="m" id="m'+i+'"></div>';
-box.appendChild(d);
+box.appendChild(d);if(S.a[i])d.querySelector("textarea").value=S.a[i];
 if(S.h[i])hint(i,true);
 if(S.s[i])show(i)});
 function hint(i,q){var m=document.getElementById("m"+i);if(!S.s[i]){m.className="m h";m.textContent="Pista: "+L[i][4]}
@@ -94,6 +95,7 @@ if(b.dataset.h!==undefined){hint(+b.dataset.h);return}
 if(b.dataset.i!==undefined){var i=+b.dataset.i,v=check(i,document.getElementById("a"+i).value);
 if(v===1){S.s[i]=1;sv();show(i);stat()}else{var m=document.getElementById("m"+i);m.className="m er";
 m.textContent=MSG[v]}}});
-document.getElementById("rs").onclick=function(){if(confirm("¿Borrar todo el progreso?")){S={s:{},h:{}};sv();location.reload()}};
+box.addEventListener("input",function(e){var t=e.target;if(t.tagName==="TEXTAREA"){S.a[+t.id.slice(1)]=t.value;sv()}});
+document.getElementById("rs").onclick=function(){if(confirm("¿Borrar todo el progreso?")){S={s:{},h:{},a:{}};sv();location.reload()}};
 stat();
 </script></body></html>

@@ -63,8 +63,9 @@ var L=[
 ["Nivel 6 · Prácticas de modificación",40,"Gimnasio: modificaciones","Sobre las tablas del reto anterior, en orden y separadas por <code>;</code>: 1) añade a SOCIO <code>FECHA_NACIMIENTO DATE</code>; 2) añade a ACTIVIDAD <code>DESCRIPCION VARCHAR2(200)</code>; 3) haz obligatorio <code>NOMBRE</code> de SOCIO; 4) desactiva <code>CK_ACTIVIDAD_DURACION</code>; 5) vuelve a activarla; 6) renombra en ACTIVIDAD la columna <code>NOMBRE</code> a <code>TITULO</code>; 7) elimina de INSCRIPCION la restricción <code>FK_INSCRIPCION_SOCIO</code>.","ADD, MODIFY, DISABLE/ENABLE CONSTRAINT, RENAME COLUMN y DROP CONSTRAINT.",[/^altertablesocioaddfecha_nacimientodate$/,/^altertableactividadadddescripcionvarchar2\(200\)$/,/^altertablesociomodifynombrenotnull$/,/^altertableactividaddisableconstraintck_actividad_duracion$/,/^altertableactividadenableconstraintck_actividad_duracion$/,/^altertableactividadrenamecolumnnombretotitulo$/,/^altertableinscripciondropconstraintfk_inscripcion_socio$/]],
 ["Nivel 6 · Prácticas de modificación",45,"Distribuidor: reconstruir la clave","Sentencias en orden, separadas por <code>;</code>: 1) crea <code>DISTRIBUIDOR</code> sin restricciones (<code>COD_DISTRIBUIDOR NUMBER(3)</code>, <code>NOMBRE VARCHAR2(15)</code>, <code>PAIS VARCHAR2(15)</code>). Con ALTER TABLE: 2) renombra la columna a <code>ID_DISTRIBUIDOR</code>; 3) cambia su tipo a <code>NUMBER(10)</code>; 4) elimina la columna; 5) vuelve a añadirla <code>NUMBER(10)</code> autoincremental; 6) PK <code>PK_DISTRIBUIDOR</code>; 7) <code>CK_DISTRIBUIDOR_NOMBRE</code>: el nombre siempre en mayúsculas.","Una columna no se convierte en IDENTITY con MODIFY: hay que eliminarla y añadirla de nuevo.",[/^createtabledistribuidor\(cod_distribuidornumber\(3\),nombrevarchar2\(15\),paisvarchar2\(15\)\)$/,/^altertabledistribuidorrenamecolumncod_distribuidortoid_distribuidor$/,/^altertabledistribuidormodifyid_distribuidornumber\(10\)$/,/^altertabledistribuidordropcolumnid_distribuidor$/,/^altertabledistribuidoraddid_distribuidornumber\(10\)generatedalwaysasidentity$/,/^altertabledistribuidoraddconstraintpk_distribuidorprimarykey\(id_distribuidor\)$/,/^altertabledistribuidoraddconstraintck_distribuidor_nombrecheck\(nombre=upper\(nombre\)\)$/]],
 ];
-var K="ctf-sql-nivel6",S={s:{},h:{}};
+var K="ctf-sql-nivel6",S={s:{},h:{},a:{}};
 try{var t=localStorage.getItem(K);if(t)S=JSON.parse(t)}catch(e){}
+S.a=S.a||{};S.s=S.s||{};S.h=S.h||{};
 function sv(){try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}}
 function norm(x){return x.toLowerCase().replace(/\s+/g,"")}
 var MSG={0:"Respuesta incorrecta. Revisa la sintaxis, los nombres y el orden.",2:"Escribe una respuesta antes de comprobar.",3:"Escribe todo en mayúsculas: palabras reservadas e identificadores.",4:"Orden incorrecto: una tabla debe crearse antes de ser referenciada."};
@@ -82,7 +83,7 @@ L.forEach(function(c,i){
 if(c[0]!==last){last=c[0];var h=document.createElement("h2");h.textContent=c[0];box.appendChild(h)}
 var d=document.createElement("div");d.className="c";d.id="c"+i;
 d.innerHTML='<h3><span>'+c[2]+'</span><span class="pt">'+c[1]+' pts</span></h3><p>'+c[3]+'</p><textarea id="a'+i+'" spellcheck="false" aria-label="Respuesta del reto '+(i+1)+'"></textarea><button data-i="'+i+'">Comprobar</button><button class="g" data-h="'+i+'">Ver pista</button><div class="m" id="m'+i+'"></div>';
-box.appendChild(d);
+box.appendChild(d);if(S.a[i])d.querySelector("textarea").value=S.a[i];
 if(S.h[i])hint(i,true);
 if(S.s[i])show(i)});
 function hint(i,q){var m=document.getElementById("m"+i);if(!S.s[i]){m.className="m h";m.textContent="Pista: "+L[i][4]}
@@ -92,6 +93,7 @@ if(b.dataset.h!==undefined){hint(+b.dataset.h);return}
 if(b.dataset.i!==undefined){var i=+b.dataset.i,v=check(i,document.getElementById("a"+i).value);
 if(v===1){S.s[i]=1;sv();show(i);stat()}else{var m=document.getElementById("m"+i);m.className="m er";
 m.textContent=MSG[v]}}});
-document.getElementById("rs").onclick=function(){if(confirm("¿Borrar todo el progreso?")){S={s:{},h:{}};sv();location.reload()}};
+box.addEventListener("input",function(e){var t=e.target;if(t.tagName==="TEXTAREA"){S.a[+t.id.slice(1)]=t.value;sv()}});
+document.getElementById("rs").onclick=function(){if(confirm("¿Borrar todo el progreso?")){S={s:{},h:{},a:{}};sv();location.reload()}};
 stat();
 </script></body></html>
